@@ -17,7 +17,10 @@ async componentDidMount() {
   const json = await response.json();
   console.log(json)
   this.setState({ posts: json.results });
-}
+  } catch (error) {
+  console.log(error);
+  }
+
 
 render() {
     return (
