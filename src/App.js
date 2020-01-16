@@ -7,34 +7,54 @@ class App extends Component {
   super(props)
   
   this.state  = {
-    posts: [],
+    isLoading: true,
+    users: [],
+    error: null,
     }
   }
 // fetching data from api url
+fetchUsers() {
+  // fetch(`https://jsonplaceholder.typicode.com/users`)
+  fetch(`https://randomuser.me/api`) //?results=25
+    .then(res => res.json())
+    .then(data =>
+      this.setState({
+        results: data,
+        isLoading: false,
+      })
+    )
+    .catch(error => this.setState({ error, isLoading: false }));
+}
 
-async componentDidMount() {
-  const response = await fetch(`https://randomuser.me/api?results=25`);
-  const json = await response.json();
-  console.log(json)
-  this.setState({ posts: json.results });
-  } catch (error) {
-  console.log(error);
-  }
-
-
+componentDidMount() {
+  this.fetchUsers();
+}
+// console.log(users);
 render() {
-    return (
-      // console.log(this.state.posts.results)
-      <div>
-      {this.state.posts.map((post) => {    
-          return <div key={post.results}>
-            <h2>{post.results.name}</h2>
-              <p>{post.results.title}</p>
+  
+  const { isLoading, users, error } = this.state;
+  return (
+    <React.Fragment>
+      <h1>Random User</h1>
+      {error ? <p>{error.message}</p> : null}
+      {!isLoading ? (
+        users.map(user => {
+          const { results, name, thumbnail,  } = user;
+          return (
+            <div key={results}>
+              <p>Name: {name}</p>
+              <p>thumbnail: {thumbnail}</p>
+              <hr />
             </div>
-         })}
-      </div>
-        )
-      }
-    }
+          );
+        })
+      ) : (
+        <h3>Loading...</h3>
+      )}
+    </React.Fragment>
+  );
+}
+}
+
 
 export default App;
