@@ -15,12 +15,13 @@ class App extends Component {
 // fetching data from api url
 fetchUsers() {
   // fetch(`https://jsonplaceholder.typicode.com/users`)
-  fetch(`https://randomuser.me/api`) //?results=25
+  fetch(`https://randomuser.me/api?results=25`) //?results=25
     .then(res => res.json())
     .then(data =>
       this.setState({
-        results: data,
+        results: data.users,
         isLoading: false,
+    
       })
     )
     .catch(error => this.setState({ error, isLoading: false }));
@@ -39,9 +40,9 @@ render() {
       {error ? <p>{error.message}</p> : null}
       {!isLoading ? (
         users.map(user => {
-          const { results, name, thumbnail,  } = user;
+          const { users, name, thumbnail,  } = user;
           return (
-            <div key={results}>
+            <div key={users.id}>
               <p>Name: {name}</p>
               <p>thumbnail: {thumbnail}</p>
               <hr />
