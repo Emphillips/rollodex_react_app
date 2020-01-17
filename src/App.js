@@ -1,61 +1,53 @@
-import React, { Component } from 'react';
-// import './App.css';
+import React from 'react';
 
 
-class App extends Component {
-  constructor(props) {
-  super(props)
+export default class FetchRandomUser extends React.Component {
+  state  = {
+    loading: true,
+    person: null,
+    };
+
+async componentDidMount() {
+  const url = "https://randomuser.me/api?results=25";
+  const response = await fetch(url);
+  const data = await response.json();
+  this.setState({ person: data.results[0], loading: false });
+  console.log(data.results[0]);
+}
+
+// render() {
+//   return (
+//     <div>
+//       {this.state.loading || !this.state.person ? (
+//       <div>loading...</div>
+//       ) : (
+//       <div>
+//         <div>{this.state.person.name.title}</div>
+//         <div>{this.state.person.name.first}</div>
+//         <div>{this.state.person.name.last}</div>
+//         <img src={this.state.person.picture.large} />
+//       </div>
+//     </div>
+//   );
+//     }
   
-  this.state  = {
-    isLoading: true,
-    users: [],
-    error: null,
-    }
-  }
-// fetching data from api url
-fetchUsers() {
-  // fetch(`https://jsonplaceholder.typicode.com/users`)
-  fetch(`https://randomuser.me/api?results=25`) //?results=25
-    .then(res => res.json())
-    .then(data =>
-      this.setState({
-        results: data.users,
-        isLoading: false,
-    
-      })
-    )
-    .catch(error => this.setState({ error, isLoading: false }));
-}
 
-componentDidMount() {
-  this.fetchUsers();
-}
-// console.log(users);
 render() {
-  
-  const { isLoading, users, error } = this.state;
+  if (this.state.loading) {
+    return <div>loading...</div>;
+  }
+
+  if (!this.state.person) {
+    return <div>didn't get a person</div>;
+  }
+
   return (
-    <React.Fragment>
-      <h1>Random User</h1>
-      {error ? <p>{error.message}</p> : null}
-      {!isLoading ? (
-        users.map(user => {
-          const { users, name, thumbnail,  } = user;
-          return (
-            <div key={users.id}>
-              <p>Name: {name}</p>
-              <p>thumbnail: {thumbnail}</p>
-              <hr />
-            </div>
-          );
-        })
-      ) : (
-        <h3>Loading...</h3>
-      )}
-    </React.Fragment>
+    <div>
+      <div>{this.state.person.name.title}</div>
+      <div>{this.state.person.name.first}</div>
+      <div>{this.state.person.name.last}</div>
+      <img src={this.state.person.picture.large} />
+    </div>
   );
+  }
 }
-}
-
-
-export default App;
